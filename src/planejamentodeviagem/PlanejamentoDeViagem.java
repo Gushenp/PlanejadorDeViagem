@@ -3,7 +3,8 @@ package planejamentodeviagem;
 
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
-
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class PlanejamentoDeViagem {
     
@@ -13,7 +14,6 @@ public class PlanejamentoDeViagem {
 
     public static void planejadorViagem(){
         _iniciarPrograma();
-        
     }
 
     public static void _iniciarPrograma(){
@@ -50,20 +50,19 @@ public class PlanejamentoDeViagem {
         do{
         nome = JOptionPane.showInputDialog(null, "Digite seu nome: ");
         
-        dataViagem = JOptionPane.showInputDialog(null, "Data da viagem no formato dd/MM/yyyy ");
+        dataViagem = JOptionPane.showInputDialog(null, "Data da viagem no formato dd/MM/AAAA ");
         
-        String correcaoData = dataViagem.replace("/", "-");
-        LocalDate tipodata = LocalDate.parse(correcaoData);
-        int ano = tipodata.getYear();
-        int mes = tipodata.getMonthValue();
-        int dia = tipodata.getDayOfMonth();
-        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate dataUsuario = LocalDate.parse(dataViagem, formatter);
+
         qntDias = JOptionPane.showInputDialog(null, "Quantidade de dias de viagem: ");
+        int IqntDias = Integer.parseInt(qntDias);
         
         valorGasto = JOptionPane.showInputDialog(null, "Valor gasto por dia: ");
+        double dvalorGasto = Double.parseDouble(valorGasto);
         
         if (_validaCampos(nome, dataViagem, qntDias, valorGasto) == true && Integer.parseInt(qntDias) > 0 && Double.parseDouble(valorGasto) > 0){
-            System.out.println("passou");
+            _processarDados(IqntDias, dvalorGasto, dataUsuario, nome);
         } else {
             JOptionPane.showMessageDialog(null, "Ops! Alguma informação está incorreta ou vazia! \n Vamos tentar novamente!");
             validarInformacoes = false;
@@ -71,9 +70,28 @@ public class PlanejamentoDeViagem {
         }while(validarInformacoes == false);
     }
     
-    public static boolean _validaCampos(String nome, String data, String dias, String valor){
-        public static void _validarCamposVazios(){
+    public static void _processarDados(int qntDias, double valorGasto, LocalDate dataUsuario, String nome){
+        double valorTotal = qntDias * valorGasto;
+        String mensagem = "";
         
+        LocalDate dataHoje = LocalDate.now();
+        System.out.println(dataHoje);
+        System.out.println(dataUsuario);
+        if (dataUsuario.equals(dataHoje)){
+            mensagem = ", sua viagem é hoje!";
+        } if (dataUsuario.isBefore(dataHoje)){
+            mensagem = (", sua data já passou!\n Era em: " + dataUsuario);
+        } else {
+            long faltamDias = ChronoUnit.DAYS.between(dataHoje, dataUsuario);
+            System.out.println(faltamDias);
+            mensagem = (", sua viagem será em" + dataUsuario + "\nFaltam: " + faltamDias + " dias.");
+        }
+        
+        JOptionPane.showMessageDialog(null, (nome + mensagem + "\nTotal estimado: R$" + valorTotal));
+        
+    }
+    
+    public static boolean _validaCampos(String nome, String data, String dias, String valor){
             if(nome.isEmpty()){
                 return false;
             } else if (data.isEmpty()){
@@ -87,7 +105,4 @@ public class PlanejamentoDeViagem {
             }
         }
     }
-    
-    
 }
-
