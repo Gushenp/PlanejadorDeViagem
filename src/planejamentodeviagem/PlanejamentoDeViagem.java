@@ -3,6 +3,7 @@ package planejamentodeviagem;
 
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -69,25 +70,28 @@ public class PlanejamentoDeViagem {
     
     public static void _processarDados(int qntDias, double valorGasto, LocalDate dataUsuario, String nome){
         double valorTotal = qntDias * valorGasto;
-        String mensagem = "";
+        String mensagemRetorno;
         
         LocalDate dataHoje = LocalDate.now();
         if (dataUsuario.equals(dataHoje)){
-            mensagem = ", sua viagem é hoje!";
+            mensagemRetorno = ", sua viagem é hoje!";
         } if (dataUsuario.isBefore(dataHoje)){
-            mensagem = (", sua data já passou!\nEra em: " + dataUsuario);
+            mensagemRetorno = (", sua data já passou!\nEra em: " + dataUsuario);
         } else {
             long faltamDias = ChronoUnit.DAYS.between(dataHoje, dataUsuario);
-            mensagem = (", sua viagem será em" + dataUsuario + "\nFaltam: " + faltamDias + " dias.");
+            mensagemRetorno = (", sua viagem será em " + dataUsuario.getDayOfMonth() + "/" + dataUsuario.getMonthValue() + "/" + dataUsuario.getYear() + "\nFaltam: " + faltamDias + " dias.");
         }
         
-        JOptionPane.showMessageDialog(null, (nome + mensagem + "\nTotal estimado: R$" + valorTotal));
-        
+        JOptionPane.showMessageDialog(null, (nome + mensagemRetorno + "\nTotal estimado: R$" + valorTotal));
     }
     
     public static LocalDate _formatarParaLocalDate(String valor){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return LocalDate.parse(valor, formatter);
+        if (valor.isEmpty()){
+            return LocalDate.of(0, 0, 0);
+        } else {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(valor, formatter);
+        }
     }
     
     public static int _formatarParaInt(String valor){
