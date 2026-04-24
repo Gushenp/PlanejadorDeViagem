@@ -3,7 +3,6 @@ package planejamentodeviagem;
 
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -30,8 +29,6 @@ public class PlanejamentoDeViagem {
                 opcoes[0]);
         if (escolha == 0){
             _coletarInformações();
-        }else{
-            return;
         }
     }
     
@@ -75,7 +72,7 @@ public class PlanejamentoDeViagem {
         LocalDate dataHoje = LocalDate.now();
         if (dataUsuario.equals(dataHoje)){
             mensagemRetorno = ", sua viagem é hoje!";
-        } if (dataUsuario.isBefore(dataHoje)){
+        } else if (dataUsuario.isBefore(dataHoje)){
             mensagemRetorno = (", sua data já passou!\nEra em: " + dataUsuario);
         } else {
             long faltamDias = ChronoUnit.DAYS.between(dataHoje, dataUsuario);
