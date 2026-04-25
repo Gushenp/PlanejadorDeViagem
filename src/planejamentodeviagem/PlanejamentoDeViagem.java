@@ -55,7 +55,7 @@ public class PlanejamentoDeViagem {
             dataViagem = JOptionPane.showInputDialog(null, "Data da viagem no formato dd/MM/AAAA ");
             if (dataViagem.isBlank()){
                 JOptionPane.showMessageDialog(null, "O campo DATA não pode estar vazio! \nVamos tentar novamente.");
-            } else {                
+            } else {
                 FdataViagem = _formatarParaLocalDate(dataViagem);
             }
         }while(dataViagem.isBlank());
@@ -66,8 +66,11 @@ public class PlanejamentoDeViagem {
                 JOptionPane.showMessageDialog(null, "O campo DIAS não pode estar vazio \nVamos tentar novamente.");
             } else {
                 FqntDias = _formatarParaInt(qntDias);
+                if (FqntDias < 0){
+                    JOptionPane.showMessageDialog(null, "Os dias não podem ser negativos! \nVamos tentar novamente.");
+                }
             }
-        }while(qntDias.isBlank());    
+        }while(qntDias.isBlank() || FqntDias < 0);    
 
         do{
             valorGasto = JOptionPane.showInputDialog(null, "Valor gasto por dia: ");
@@ -113,21 +116,5 @@ public class PlanejamentoDeViagem {
     
     public static double _formatarParaDouble(String valor){
         return Double.parseDouble(valor);
-    }
-    
-    public static boolean _verificarValoresNegativos(int valor){
-        if (valor > 0){
-            return true;
-        } else {
-            return false;
-        }
-    }
-    
-    public static boolean _verificarValoresNegativos(double valor){
-        if (valor > 0){
-            return true;
-        } else {
-            return false;
-        }
     }
 }
