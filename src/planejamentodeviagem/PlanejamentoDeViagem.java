@@ -1,8 +1,10 @@
 
 package planejamentodeviagem;
 
+import java.time.Clock;
 import javax.swing.JOptionPane;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
@@ -37,32 +39,46 @@ public class PlanejamentoDeViagem {
         //=== Variáveis importantes 
         //== Variável de dados
         String nome, dataViagem, qntDias, valorGasto;
-        
-        //== Variável de controle
-        boolean validarInformacoes = true;
-        
+        int FqntDias = 0;
+        double FvalorGasto = 0.0;
+        LocalDate FdataViagem = null;
+      
         // Controle de validação e entrada de dados
-        do{
-            
+        do {
             nome = JOptionPane.showInputDialog(null, "Digite seu nome: ");
-
-            dataViagem = JOptionPane.showInputDialog(null, "Data da viagem no formato dd/MM/AAAA ");
-            LocalDate FdataViagem = _formatarParaLocalDate(dataViagem);
-
-            qntDias = JOptionPane.showInputDialog(null, "Quantidade de dias de viagem: ");
-            int FqntDias = _formatarParaInt(qntDias);
-
-            valorGasto = JOptionPane.showInputDialog(null, "Valor gasto por dia: ");
-            double FvalorGasto = _formatarParaDouble(valorGasto);
-
-            if (_validaCamposVazios(nome, dataViagem, qntDias, valorGasto) && _verificarValoresNegativos(FqntDias) && _verificarValoresNegativos(FvalorGasto)){
-                _processarDados(FqntDias, FvalorGasto, FdataViagem, nome);
-            } else {
-                JOptionPane.showMessageDialog(null, "Ops! Alguma informação está incorreta ou vazia! \n Vamos tentar novamente!");
-                validarInformacoes = false;
+            if (nome.isBlank()){
+                JOptionPane.showMessageDialog(null, "O campo NOME não pode estar vazio! \nVamos tentar novamente.");
             }
+        }while(nome.isBlank());
         
-        }while(validarInformacoes == false);
+        do {
+            dataViagem = JOptionPane.showInputDialog(null, "Data da viagem no formato dd/MM/AAAA ");
+            if (dataViagem.isBlank()){
+                JOptionPane.showMessageDialog(null, "O campo DATA não pode estar vazio! \nVamos tentar novamente.");
+            } else {                
+                FdataViagem = _formatarParaLocalDate(dataViagem);
+            }
+        }while(dataViagem.isBlank());
+
+        do{
+            qntDias = JOptionPane.showInputDialog(null, "Quantidade de dias de viagem: ");
+            if (qntDias.isBlank()){
+                JOptionPane.showMessageDialog(null, "O campo DIAS não pode estar vazio \nVamos tentar novamente.");
+            } else {
+                FqntDias = _formatarParaInt(qntDias);
+            }
+        }while(qntDias.isBlank());    
+
+        do{
+            valorGasto = JOptionPane.showInputDialog(null, "Valor gasto por dia: ");
+            if (valorGasto.isBlank()){
+                JOptionPane.showMessageDialog(null, "O campo VALOR não pode estar vazio! \nVamos tentar novamente.");
+            } else {
+                FvalorGasto = _formatarParaDouble(valorGasto);
+            }   
+        }while(valorGasto.isBlank());       
+
+        _processarDados(FqntDias, FvalorGasto, FdataViagem, nome);
     }
     
     public static void _processarDados(int qntDias, double valorGasto, LocalDate dataUsuario, String nome){
@@ -84,7 +100,7 @@ public class PlanejamentoDeViagem {
     
     public static LocalDate _formatarParaLocalDate(String valor){
         if (valor.isEmpty()){
-            return LocalDate.of(0, 0, 0);
+            return null;
         } else {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             return LocalDate.parse(valor, formatter);
@@ -112,21 +128,6 @@ public class PlanejamentoDeViagem {
             return true;
         } else {
             return false;
-        }
-    }
-    
-    public static boolean _validaCamposVazios(String nome, String data, String dias, String valor){
-            if(nome.isEmpty()){
-                return false;
-            } else if (data.isEmpty()){
-                return false;
-            } else if (dias.isEmpty()){
-                return false;
-            } else if (valor.isEmpty()){
-                return false;
-            } else {
-                return true;
-            }
         }
     }
 }
